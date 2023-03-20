@@ -8,7 +8,7 @@ import java.util.List;
 public interface IFlowerService {
 
     List<Flowerdto> listAll();
-    Flower save (Flower flower);
+    Flower save (Flowerdto flowerdto);
     Flower update (Flower flower);
     Flowerdto findById(int id);
     void delete(Flowerdto flowerdto);

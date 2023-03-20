@@ -27,17 +27,21 @@ public class FlowerServiceImpl implements IFlowerService{
     }
 
     @Override
-    public Flower save(Flower flower) {
+    public Flower save(Flowerdto flowerdto) {
+
         return flowerRepository.save(flower);
     }
 
     @Override
-    public Flower update(Flower flower) {
+    public Flowerdto update(Flowerdto flowerdto) {
+        Flowerdto flowerDB = findById(flowerdto.getId());
+
         return null;
     }
 
     @Override
     public Flowerdto findById(int id) {
+
         return null;
     }
 

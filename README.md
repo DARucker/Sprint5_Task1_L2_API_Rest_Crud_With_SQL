@@ -2,7 +2,7 @@
 
 Access the page ->https://start.spring.io/, and generate a Spring boot project with the following characteristics:
 
-We have an entity called FlorEntity, which has the following properties:
+We have an entity called FlowerEntity, which has the following properties:
 
 - int id
 
@@ -10,7 +10,7 @@ We have an entity called FlorEntity, which has the following properties:
 
 - String country
 
-We also have a DTO called FlorDTO, which will have the same properties as the Branch entity, adding one:
+We also have a DTO called FlowerDTO, which will have the same properties as the Branch entity, adding one:
 
 - String FlowerType
 
@@ -34,15 +34,15 @@ For this, depending on the main package, you will create a package structure, wh
 
 The class located in the controllers package (FlorController, for example), must be able to respond to the following requests to update and consult information:
 
-http://localhost:9001/flor/add
+http://localhost:9001/flower/add
 
-http://localhost:9001/flor/update
+http://localhost:9001/flower/update
 
-http://localhost:9001/flor/delete/{id}
+http://localhost:9001/flower/delete/{id}
 
-http://localhost:9001/flor/getOne/{id}
+http://localhost:9001/flower/getOne/{id}
 
-http://localhost:9001/flor/getAll
+http://localhost:9001/flower/getAll
 
 
 
