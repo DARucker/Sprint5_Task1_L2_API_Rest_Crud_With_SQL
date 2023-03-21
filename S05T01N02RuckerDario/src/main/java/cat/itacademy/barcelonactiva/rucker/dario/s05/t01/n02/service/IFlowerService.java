@@ -8,8 +8,8 @@ import java.util.List;
 public interface IFlowerService {
 
     List<Flowerdto> listAll();
-    Flower save (Flowerdto flowerdto);
-    Flower update (Flower flower);
+    Flowerdto create (Flowerdto flowerdto);
+    Flowerdto update (Flowerdto flowerdto);
     Flowerdto findById(int id);
     void delete(Flowerdto flowerdto);
 }

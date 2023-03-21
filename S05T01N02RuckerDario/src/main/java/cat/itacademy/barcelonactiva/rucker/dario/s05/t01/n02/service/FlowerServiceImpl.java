@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FlowerServiceImpl implements IFlowerService{
@@ -16,33 +17,45 @@ public class FlowerServiceImpl implements IFlowerService{
     @Autowired
     private FlowerRepository flowerRepository;
 
+    public FlowerServiceImpl(FlowerRepository flowerRepository) {
+    }
+
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 
-    @Override
+    @Override // DONE //
     public List<Flowerdto> listAll() {
-        return null;
+        return flowerRepository.findAll().stream()
+                .map(x -> entityToDto(x)) // Another option using reference method: .map(this::entityToDto)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public Flower save(Flowerdto flowerdto) {
-
-        return flowerRepository.save(flower);
+    @Override // DONE //
+    public Flowerdto create(Flowerdto flowerdto) {
+        Flower flower = dtoToEntity(flowerdto);
+        flower = flowerRepository.save(flower);
+        return entityToDto(flower);
     }
 
     @Override
     public Flowerdto update(Flowerdto flowerdto) {
         Flowerdto flowerDB = findById(flowerdto.getId());
-
-        return null;
+        if(flowerDB == null) {
+            return null;
+        }
+        flowerDB.setName(flowerdto.getName());
+        flowerDB.setCountry(flowerdto.getCountry());
+        Flower flowerUpdate = dtoToEntity(flowerDB);
+        flowerUpdate = flowerRepository.save(flowerUpdate);
+        return entityToDto(flowerUpdate);
     }
 
-    @Override
+    @Override // DONE //
     public Flowerdto findById(int id) {
-
-        return null;
+        Flower flower = flowerRepository.findById(id).orElse(null);
+        return entityToDto(flower);
     }
 
     @Override
