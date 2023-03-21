@@ -11,5 +11,5 @@ public interface IFlowerService {
     Flowerdto create (Flowerdto flowerdto);
     Flowerdto update (Flowerdto flowerdto);
     Flowerdto findById(int id);
-    void delete(Flowerdto flowerdto);
+    Flowerdto delete(int id);
 }

@@ -11,9 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
-
+@SpringBootTest
 public class FlowerServiceMockTest {
 
 
@@ -45,8 +46,7 @@ public class FlowerServiceMockTest {
 
         Flowerdto found = flowerService.findById(1);
         // Then
-        Assertions.assertThat(found.getName()).isEqualTo("Ar2");
-
+        Assertions.assertThat(found.getName()).isEqualTo("clavel");
     }
 
     @Test

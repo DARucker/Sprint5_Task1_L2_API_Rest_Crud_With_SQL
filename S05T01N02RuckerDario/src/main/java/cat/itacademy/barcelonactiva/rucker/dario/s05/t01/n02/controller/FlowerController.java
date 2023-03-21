@@ -9,9 +9,9 @@ http://localhost:9001/flor/getOne/{id} *** DONE
 http://localhost:9001/flor/getAll *** DONE
  */
 
-import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.domain.Flower;
 import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.dto.Flowerdto;
 import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.service.IFlowerService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class FlowerController {
     private IFlowerService flowerService;
 
     @PostMapping(value = "/add")
-    public ResponseEntity<Flowerdto> create(@RequestBody Flowerdto flowerdto){
+    public ResponseEntity<Flowerdto> create(@Valid @RequestBody Flowerdto flowerdto){
         LOG.info("Using method: createFlower " + flowerdto);
         return  ResponseEntity.status(HttpStatus.CREATED).body(flowerService.create(flowerdto));
     }
@@ -65,9 +65,16 @@ public class FlowerController {
             return ResponseEntity.notFound().build();
         }
         return  ResponseEntity.status(HttpStatus.OK).body(flowerService.update(flowerdto));
-
-
     }
 
-
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Flowerdto> delete(@PathVariable int id){
+        LOG.info("Using method delete");
+    Flowerdto flowerDelete = flowerService.findById(id);
+    if(flowerDelete == null){
+        return ResponseEntity.notFound().build();
+    }
+        flowerService.delete(flowerDelete.getId());
+        return ResponseEntity.ok(flowerDelete);
+    }
 }

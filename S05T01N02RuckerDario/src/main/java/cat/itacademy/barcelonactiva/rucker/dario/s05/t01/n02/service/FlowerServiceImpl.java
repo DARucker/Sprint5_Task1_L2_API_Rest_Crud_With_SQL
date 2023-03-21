@@ -7,10 +7,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class FlowerServiceImpl implements IFlowerService{
 
@@ -18,6 +20,7 @@ public class FlowerServiceImpl implements IFlowerService{
     private FlowerRepository flowerRepository;
 
     public FlowerServiceImpl(FlowerRepository flowerRepository) {
+    this.flowerRepository = flowerRepository;
     }
 
     @Bean
@@ -39,7 +42,7 @@ public class FlowerServiceImpl implements IFlowerService{
         return entityToDto(flower);
     }
 
-    @Override
+    @Override // DONE //
     public Flowerdto update(Flowerdto flowerdto) {
         Flowerdto flowerDB = findById(flowerdto.getId());
         if(flowerDB == null) {
@@ -59,8 +62,13 @@ public class FlowerServiceImpl implements IFlowerService{
     }
 
     @Override
-    public void delete(Flowerdto flowerdto) {
+    public Flowerdto delete(int id) {
 
+        Flower flowerDelete = flowerRepository.findById(id).orElse(null);
+        if(flowerDelete == null){
+            return null;
+        }
+        return delete(flowerDelete.getId());
     }
     public Flowerdto entityToDto(Flower flower){
         Flowerdto flowerdto = modelMapper().map(flower, Flowerdto.class);
