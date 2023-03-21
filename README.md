@@ -44,6 +44,8 @@ http://localhost:9001/flower/getOne/{id}
 
 http://localhost:9001/flower/getAll
 
-
+OpenApi links at: 
+- http://localhost:9001/v3/api-docs
+- http://localhost:9001/swagger-ui/index.html
 
 As you can see, in the application.properties file, you must configure that the port to be used is 9001.
