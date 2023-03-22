@@ -71,6 +71,7 @@ public class FlowerServiceImpl implements IFlowerService{
         flowerRepository.delete(flowerDelete);
         return entityToDto(flowerDelete);
     }
+    @Override
     public Flowerdto entityToDto(Flower flower){
         Flowerdto flowerdto = modelMapper().map(flower, Flowerdto.class);
 

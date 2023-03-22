@@ -12,4 +12,5 @@ public interface IFlowerService {
     Flowerdto update (Flowerdto flowerdto);
     Flowerdto findById(int id);
     Flowerdto delete(int id);
+    Flowerdto entityToDto(Flower flower);
 }
