@@ -1,6 +1,8 @@
 package cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.dto;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +21,10 @@ public class Flowerdto {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     int id;
-
+    @NotEmpty(message = "name can't be empty")
+    @Pattern(regexp = "[a-zA-Z _]{3,15}", message = "minimum 3 and maximun 15. Only letters or spaces allowed")
     String name;
-
+    @NotEmpty (message = "country can't be empty")
     String country;
 
     private String flowerType;

@@ -68,7 +68,8 @@ public class FlowerServiceImpl implements IFlowerService{
         if(flowerDelete == null){
             return null;
         }
-        return delete(flowerDelete.getId());
+        flowerRepository.delete(flowerDelete);
+        return entityToDto(flowerDelete);
     }
     public Flowerdto entityToDto(Flower flower){
         Flowerdto flowerdto = modelMapper().map(flower, Flowerdto.class);

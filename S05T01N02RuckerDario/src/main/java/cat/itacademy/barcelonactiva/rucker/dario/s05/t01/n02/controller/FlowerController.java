@@ -1,25 +1,24 @@
 package cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.controller;
 
-
-/*
-http://localhost:9001/flor/add *** DONE
-http://localhost:9001/flor/update/{id} *** DONE
-http://localhost:9001/flor/delete/{id}
-http://localhost:9001/flor/getOne/{id} *** DONE
-http://localhost:9001/flor/getAll *** DONE
- */
-
+import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.domain.Flower;
 import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.dto.Flowerdto;
 import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.service.IFlowerService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/flower")
@@ -30,8 +29,12 @@ public class FlowerController {
     private IFlowerService flowerService;
 
     @PostMapping(value = "/add")
-    public ResponseEntity<Flowerdto> create(@Valid @RequestBody Flowerdto flowerdto){
+    public ResponseEntity<Flowerdto> create(@Valid @RequestBody Flowerdto flowerdto, BindingResult result){
         LOG.info("Using method: createFlower " + flowerdto);
+        if(result.hasErrors()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
+
+        }
         return  ResponseEntity.status(HttpStatus.CREATED).body(flowerService.create(flowerdto));
     }
 
@@ -57,14 +60,17 @@ public class FlowerController {
     }
 
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<Flowerdto> update(@RequestBody Flowerdto flowerdto, @PathVariable int id){
+    public ResponseEntity<Flowerdto> update(@Valid @RequestBody Flowerdto flowerdto, BindingResult result, @PathVariable int id){
         LOG.info("Using method: updateFlower " + flowerdto);
-
-        Flowerdto flowerdtoDB = flowerService.findById(id);
-        if(flowerdtoDB == null){
+        if(result.hasErrors()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
+        }
+        flowerdto.setId(id);
+        Flowerdto flowerDBdto = flowerService.update(flowerdto);
+        if(flowerDBdto == null){
             return ResponseEntity.notFound().build();
         }
-        return  ResponseEntity.status(HttpStatus.OK).body(flowerService.update(flowerdto));
+        return ResponseEntity.ok(flowerDBdto);
     }
 
     @DeleteMapping(value = "/delete/{id}")
@@ -77,4 +83,28 @@ public class FlowerController {
         flowerService.delete(flowerDelete.getId());
         return ResponseEntity.ok(flowerDelete);
     }
+
+    private String formatMessage(BindingResult result){
+        List<Map<String, String>> errors = result.getFieldErrors().stream()
+                .map(err ->{
+                    Map<String, String> error = new HashMap<>();
+                    error.put(err.getField(), err.getDefaultMessage());
+                    return error;
+                }).collect(Collectors.toList());
+        ErrorMessage errorMessage = new ErrorMessage("01", errors);
+        //ErrorMessage errorMessage = ErrorMessage.builder()
+          //      .code("01")
+            //    .customErrorMessages(errors)
+              //  .build();
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            jsonString = mapper.writeValueAsString(errorMessage);
+        }catch (JsonProcessingException e){
+            e.printStackTrace();
+        }
+        return jsonString;
+    }
+
+
 }

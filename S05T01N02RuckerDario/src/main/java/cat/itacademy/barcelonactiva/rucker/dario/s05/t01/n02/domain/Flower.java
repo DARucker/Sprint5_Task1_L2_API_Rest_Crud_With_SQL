@@ -20,10 +20,9 @@ public class Flower {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     int id;
-    @NotEmpty (message = "name can't be empty")
-    @Pattern(regexp = "[A-Z][a-z]")
+
     String name;
-    @NotEmpty
+
     String country;
 
 }
