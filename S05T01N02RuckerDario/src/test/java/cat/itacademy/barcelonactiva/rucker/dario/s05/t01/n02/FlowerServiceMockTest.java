@@ -14,19 +14,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 @SpringBootTest
 public class FlowerServiceMockTest {
 
-
     @Mock
     private FlowerRepository flowerRepository;
-
     private IFlowerService flowerService;
-
     private Flower flower01;
-    //public BranchServiceMockTest() {
-    //}
 
     @BeforeEach
     public void setup() {
@@ -40,33 +36,54 @@ public class FlowerServiceMockTest {
                 .country("Argentina")
                 .build();
         // When
-        Mockito.when(flowerRepository.save(flower01)).thenReturn(flower01);
-        Mockito.when(flowerRepository.findById(1)).thenReturn(Optional.of(flower01));
+
+
     }
 
     @DisplayName("Test findById method")
     @Test
     public void whenFindById_ThenReturnBrach () {
-
+        // Given
+        Mockito.when(flowerRepository.findById(1)).thenReturn(Optional.of(flower01));
+        // When
         Flowerdto found = flowerService.findById(1);
         // Then
-        Assertions.assertThat(found.getName()).isEqualTo("clavel");
+        Assertions.assertThat(found.getName()).isEqualTo("rosa");
     }
 
     @DisplayName("Test EntityToDto method")
     @Test
     public void WhenFindById_ThenTestEntityToDtoMethod() {
+        Mockito.when(flowerRepository.findById(1)).thenReturn(Optional.of(flower01));
         Flowerdto found = flowerService.findById(1);
         Assertions.assertThat(found.getFlowerType()).isEqualTo("EU");
     }
     @DisplayName("Test save method")
     @Test
     public void WhenSaveFlower_ThenFlowerIsNotNull(){
-
+        Mockito.when(flowerRepository.save(flower01)).thenReturn(flower01);
         //Mockito.when(flowerRepository.save(flower01)).thenReturn(flower01);
         Flowerdto flowerdto01 = flowerService.entityToDto(flower01);
         Flowerdto saved = flowerService.create(flowerdto01);
         Assertions.assertThat(saved.getCountry()).isEqualTo("Argentina");
-        Assertions.assertThat(saved).isNull();
+        Assertions.assertThat(saved).isNotNull();
     }
+
+    @DisplayName("Test listing method")
+    @Test
+    public void WhenListFlower_ThenObteinFlowerList(){
+        Flower flower02 = Flower.builder()
+                .id(3)
+                .name("Tulipan")
+                .country("Holand")
+                .build();
+        // Given
+        Mockito.when(flowerRepository.findAll()).thenReturn(List.of(flower01, flower02));
+        // When
+        List<Flowerdto> flowerList = flowerService.listAll();
+        // Then
+        Assertions.assertThat(flowerList).isNotNull();
+        Assertions.assertThat(flowerList.size()).isEqualTo(2);
+    }
+
 }

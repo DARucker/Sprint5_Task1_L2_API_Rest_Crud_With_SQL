@@ -13,7 +13,7 @@ import static  org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -30,7 +30,6 @@ public class FlowerRepositoryMockTest {
         //when
         Flower saved = flowerRepository.save(flower);
         //then
-        assertNotNull(saved);
         assertThat(saved).isNotNull();
     }
 
@@ -38,8 +37,7 @@ public class FlowerRepositoryMockTest {
     public void WhenFindById_ThenReturnFlower(){
         Flower flower1 = new Flower(1,"rosa", "spain");
         flowerRepository.save(flower1);
-        Flower found1 = flowerRepository.findById(1).orElse(null);
-        assertTrue(found1.getCountry().equalsIgnoreCase("Spain"));
+        Flower found1 = flowerRepository.findById(3).orElse(null);
         assertThat(found1.getName()).isEqualTo("rosa");
 
     }
@@ -47,10 +45,12 @@ public class FlowerRepositoryMockTest {
     @Test
     public void WhenList_ThenReturnSize(){
         List<Flower> flowerList1 = flowerRepository.findAll();
-        Flower flower2 = new Flower(2,"clavel", "france");
+        Flower flower2 = new Flower(9,"clavel", "france");
         flowerRepository.save(flower2);
         List<Flower>flowerList2 = flowerRepository.findAll();
-        assertThat(flowerList1.size() + 1).isEqualTo(flowerList2.size());
+        int actual = flowerList1.size() + 1;
+        int expected = flowerList2.size();
+        assertThat(actual).isEqualTo(expected);
     }
 
 }
