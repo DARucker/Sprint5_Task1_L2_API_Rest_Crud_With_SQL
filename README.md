@@ -48,4 +48,15 @@ OpenApi links at:
 - http://localhost:9001/v3/api-docs
 - http://localhost:9001/swagger-ui/index.html
 
+Application tested with: 
+ Junit5, Hamcrest and Mockito. 
+ Coverage
+  - controller 33%
+  - domain 50%
+  - dto 50%
+  - repository 100%
+  - service 100%
+  - Total 55%
+
+
 As you can see, in the application.properties file, you must configure that the port to be used is 9001.

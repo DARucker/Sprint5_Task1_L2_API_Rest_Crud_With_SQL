@@ -44,13 +44,13 @@ public class FlowerServiceImpl implements IFlowerService{
 
     @Override // DONE //
     public Flowerdto update(Flowerdto flowerdto) {
-        Flowerdto flowerDB = findById(flowerdto.getId());
-        if(flowerDB == null) {
+        Flowerdto flowerDtoDB = findById(flowerdto.getId());
+        if(flowerDtoDB == null) {
             return null;
         }
-        flowerDB.setName(flowerdto.getName());
-        flowerDB.setCountry(flowerdto.getCountry());
-        Flower flowerUpdate = dtoToEntity(flowerDB);
+        flowerDtoDB.setName(flowerdto.getName());
+        flowerDtoDB.setCountry(flowerdto.getCountry());
+        Flower flowerUpdate = dtoToEntity(flowerDtoDB);
         flowerUpdate = flowerRepository.save(flowerUpdate);
         return entityToDto(flowerUpdate);
     }
@@ -85,6 +85,7 @@ public class FlowerServiceImpl implements IFlowerService{
         return flowerdto;
     }
 
+    @Override
     public Flower dtoToEntity (Flowerdto flowerdto){
         Flower flower = modelMapper().map(flowerdto, Flower.class);
 
