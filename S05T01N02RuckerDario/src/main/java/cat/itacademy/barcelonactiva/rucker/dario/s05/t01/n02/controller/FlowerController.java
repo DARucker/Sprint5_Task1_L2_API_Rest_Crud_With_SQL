@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/flower")
 public class FlowerController {
 
-    private static Logger LOG = LoggerFactory.getLogger(FlowerController.class);
+        private static Logger LOG = LoggerFactory.getLogger(FlowerController.class);
     @Autowired
     private IFlowerService flowerService;
 
@@ -33,7 +33,6 @@ public class FlowerController {
         LOG.info("Using method: createFlower " + flowerdto);
         if(result.hasErrors()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
-
         }
         return  ResponseEntity.status(HttpStatus.CREATED).body(flowerService.create(flowerdto));
     }
@@ -68,7 +67,7 @@ public class FlowerController {
         flowerdto.setId(id);
         Flowerdto flowerDBdto = flowerService.update(flowerdto);
         if(flowerDBdto == null){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(flowerDBdto);
     }
