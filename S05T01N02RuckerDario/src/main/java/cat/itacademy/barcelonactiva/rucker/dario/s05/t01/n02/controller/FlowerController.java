@@ -5,6 +5,9 @@ import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.dto.Flowerdto;
 import cat.itacademy.barcelonactiva.rucker.dario.s05.t01.n02.service.IFlowerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +21,24 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/flower")
+@Tag(name = "Spring 5 - Task 1 - Level 2", description = "Rest CRUD with SQL database")
 public class FlowerController {
 
-        private static Logger LOG = LoggerFactory.getLogger(FlowerController.class);
+    private static Logger LOG = LoggerFactory.getLogger(FlowerController.class);
     @Autowired
     private IFlowerService flowerService;
+    Function<Integer, ResponseStatusException> notFoundId = (id) -> {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "No Employee Available with the given Id - " + id);
+    };
 
     @PostMapping(value = "/add")
+    @Operation(summary = "Create a new flower", description = "Add a new flower into the database")
+    @ApiResponse(responseCode = "201", description = "Flower created correctly")
     public ResponseEntity<Flowerdto> create(@Valid @RequestBody Flowerdto flowerdto, BindingResult result){
         LOG.info("Using method: createFlower " + flowerdto);
         if(result.hasErrors()){
@@ -37,15 +47,25 @@ public class FlowerController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(flowerService.create(flowerdto));
     }
 
+    @Operation(summary = "Find a flower", description = "Find the selected flower using the id as the key search")
+    @ApiResponse(responseCode = "200", description = "Flower found")
+    @ApiResponse(responseCode = "404", description = "Flower not found")
     @GetMapping(value = "getOne/{id}")
     public ResponseEntity<Flowerdto> findById (@PathVariable int id){
         LOG.info("Using method getFlower");
-
         Flowerdto flowerdto = flowerService.findById(id);
-        if(null == flowerdto){
-            return ResponseEntity.notFound().build();
+        if(flowerdto != null){
+            return ResponseEntity.ok(flowerdto);
+        } else{
+            throw (ResponseStatusException)this.notFoundId.apply(id);
         }
-        return ResponseEntity.ok(flowerdto);
+//       Flowerdto flowerdto = null;
+//        try {
+//            flowerdto = flowerService.findById(id);
+//        } catch (ResponseStatusException e){
+//            return new ResponseEntity<>(e.getHeaders(), e.getStatusCode());
+//        }
+//        return ResponseEntity.ok(flowerdto);
     }
 
     @GetMapping(value = "/getAll")
@@ -61,15 +81,14 @@ public class FlowerController {
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<Flowerdto> update(@Valid @RequestBody Flowerdto flowerdto, BindingResult result, @PathVariable int id){
         LOG.info("Using method: updateFlower " + flowerdto);
-        if(result.hasErrors()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
+        try{
+            Flowerdto flowerDBdto = flowerService.update(flowerdto);
+            flowerdto.setId(id);
+            flowerDBdto = flowerService.update(flowerdto);
+            return ResponseEntity.ok(flowerDBdto);
+        } catch (ResponseStatusException e){
+            return new ResponseEntity<>(e.getHeaders(), e.getStatusCode());
         }
-        flowerdto.setId(id);
-        Flowerdto flowerDBdto = flowerService.update(flowerdto);
-        if(flowerDBdto == null){
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(flowerDBdto);
     }
 
     @DeleteMapping(value = "/delete/{id}")
@@ -104,6 +123,4 @@ public class FlowerController {
         }
         return jsonString;
     }
-
-
 }
