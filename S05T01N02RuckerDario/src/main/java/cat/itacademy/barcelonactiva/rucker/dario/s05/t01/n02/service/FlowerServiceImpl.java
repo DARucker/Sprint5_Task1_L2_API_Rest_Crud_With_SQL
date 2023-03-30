@@ -26,7 +26,7 @@ public class FlowerServiceImpl implements IFlowerService{
     private FlowerRepository flowerRepository;
 
     public FlowerServiceImpl(FlowerRepository flowerRepository) {
-    this.flowerRepository = flowerRepository;
+        this.flowerRepository = flowerRepository;
     }
 
     @Bean
@@ -36,6 +36,7 @@ public class FlowerServiceImpl implements IFlowerService{
 
     @Override // DONE //
     public Flowerdto create(Flowerdto flowerdto) {
+        log.info("Creating flower with id {}", flowerdto.getId());
         Flower flower = dtoToEntity(flowerdto);
         flower = flowerRepository.save(flower);
         return entityToDto(flower);
@@ -43,7 +44,7 @@ public class FlowerServiceImpl implements IFlowerService{
 
 
     @Override
-    public Flowerdto findById(int id) {
+    public Flowerdto findById(int id) throws ResponseStatusException {
         Optional<Flower> flower = flowerRepository.findById(id);
         if(flower.isPresent()){
             log.info("Flower found with id {} is: {}", id, flower.get());
