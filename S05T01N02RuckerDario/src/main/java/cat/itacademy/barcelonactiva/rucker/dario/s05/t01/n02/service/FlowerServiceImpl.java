@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -34,14 +35,13 @@ public class FlowerServiceImpl implements IFlowerService{
         return new ModelMapper();
     }
 
-    @Override // DONE //
+    @Override
     public Flowerdto create(Flowerdto flowerdto) {
         log.info("Creating flower with id {}", flowerdto.getId());
         Flower flower = dtoToEntity(flowerdto);
         flower = flowerRepository.save(flower);
         return entityToDto(flower);
     }
-
 
     @Override
     public Flowerdto findById(int id) throws ResponseStatusException {
@@ -55,34 +55,36 @@ public class FlowerServiceImpl implements IFlowerService{
         }
     }
 
-    @Override // DONE //
+    @Override
     public List<Flowerdto> listAll() {
         return flowerRepository.findAll().stream()
                 .map(x -> entityToDto(x)) // Another option using reference method: .map(this::entityToDto)
                 .collect(Collectors.toList());
     }
 
-    @Override // DONE //
-    public Flowerdto update(Flowerdto flowerdto) {
-        Flowerdto flowerDtoDB = findById(flowerdto.getId());
+    @Override
+    public Flowerdto update(Flowerdto flowerdto, int id, BindingResult result) {
+
+        //Flower flower = dtoToEntity(flowerdto);
+        Flowerdto flowerDtoDB = findById(id);
         if(flowerDtoDB == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No flower available with id: " + flowerdto.getId());
         }
         flowerDtoDB.setName(flowerdto.getName());
         flowerDtoDB.setCountry(flowerdto.getCountry());
         Flower flowerUpdate = dtoToEntity(flowerDtoDB);
-        flowerUpdate = flowerRepository.save(flowerUpdate);
+        if(!result.hasErrors()) {
+            flowerUpdate = flowerRepository.save(flowerUpdate);
+        }
         return entityToDto(flowerUpdate);
     }
-
-
 
     @Override
     public Flowerdto delete(int id) {
 
         Flower flowerDelete = flowerRepository.findById(id).orElse(null);
         if(flowerDelete == null){
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No flower available with id: " + id);
         }
         flowerRepository.delete(flowerDelete);
         return entityToDto(flowerDelete);
@@ -109,7 +111,7 @@ public class FlowerServiceImpl implements IFlowerService{
     }
 
     /**
-     * This method recives an dto in order to transform it into an entity
+     * This method recives a DTO object to transform it into an entity
      * @param flowerdto
      * @return flower
      */
