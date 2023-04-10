@@ -102,10 +102,10 @@ public class FlowerController {
         }
         return ResponseEntity.ok(allFlower);
     }
-    @Operation(summary = "Updates a flower using the new flower data", description = "Updates the data of the selected flower")
-    @ApiResponse(responseCode = "201", description = "Flower updated", content = {@Content(mediaType = "application/json",
-            schema = @Schema(implementation = Flowerdto.class))})
-    @ApiResponse(responseCode = "404", description = "Flower not found", content = @Content)
+        @Operation(summary = "Updates a flower using the new flower data", description = "Updates the data of the selected flower")
+        @ApiResponse(responseCode = "201", description = "Flower updated", content = {@Content(mediaType = "application/json",
+                schema = @Schema(implementation = Flowerdto.class))})
+        @ApiResponse(responseCode = "404", description = "Flower not found", content = @Content)
     @PutMapping(value = "/update/{id}")
     @ApiResponse(responseCode = "406", description = "Flower values not valid", content = @Content)
     public ResponseEntity<?> update(@Valid @RequestBody Flowerdto flowerdto, BindingResult result, @PathVariable int id){
@@ -142,22 +142,15 @@ public class FlowerController {
         Flowerdto flowerDelete = null;
         try {
             flowerDelete = flowerService.findById(id);
+            flowerService.delete(flowerDelete.getId());
+            return ResponseEntity.ok(flowerDelete);
+
         } catch (ResponseStatusException e){
         Map<String, Object> error = new HashMap<>();
         error.put("Message", e.getMessage());
         error.put("Reason", e.getReason());
         return new ResponseEntity<Map<String,Object>>(error, HttpStatus.NOT_FOUND);
         }
-        flowerService.delete(flowerDelete.getId());
-        return ResponseEntity.ok(flowerDelete);
+
     }
 }
-
-
-
-
-
-        //if(flowerDelete == null){
-        //return ResponseEntity.notFound().build();
-    //}
-
